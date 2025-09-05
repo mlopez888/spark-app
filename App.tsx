@@ -1,0 +1,1281 @@
+import React, { useState, useEffect } from "react";
+
+//used internet to find lists
+const POKEMON_BY_GEN: Record<string, string[]> = {
+  gen1: [
+    "Bulbasaur",
+    "Ivysaur",
+    "Venusaur",
+    "Charmander",
+    "Charmeleon",
+    "Charizard",
+    "Squirtle",
+    "Wartortle",
+    "Blastoise",
+    "Caterpie",
+    "Metapod",
+    "Butterfree",
+    "Weedle",
+    "Kakuna",
+    "Beedrill",
+    "Pidgey",
+    "Pidgeotto",
+    "Pidgeot",
+    "Rattata",
+    "Raticate",
+    "Spearow",
+    "Fearow",
+    "Ekans",
+    "Arbok",
+    "Pikachu",
+    "Raichu",
+    "Sandshrew",
+    "Sandslash",
+    "Nidoran♀",
+    "Nidorina",
+    "Nidoqueen",
+    "Nidoran♂",
+    "Nidorino",
+    "Nidoking",
+    "Clefairy",
+    "Clefable",
+    "Vulpix",
+    "Ninetales",
+    "Jigglypuff",
+    "Wigglytuff",
+    "Zubat",
+    "Golbat",
+    "Oddish",
+    "Gloom",
+    "Vileplume",
+    "Paras",
+    "Parasect",
+    "Venonat",
+    "Venomoth",
+    "Diglett",
+    "Dugtrio",
+    "Meowth",
+    "Persian",
+    "Psyduck",
+    "Golduck",
+    "Mankey",
+    "Primeape",
+    "Growlithe",
+    "Arcanine",
+    "Poliwag",
+    "Poliwhirl",
+    "Poliwrath",
+    "Abra",
+    "Kadabra",
+    "Alakazam",
+    "Machop",
+    "Machoke",
+    "Machamp",
+    "Bellsprout",
+    "Weepinbell",
+    "Victreebel",
+    "Tentacool",
+    "Tentacruel",
+    "Geodude",
+    "Graveler",
+    "Golem",
+    "Ponyta",
+    "Rapidash",
+    "Slowpoke",
+    "Slowbro",
+    "Magnemite",
+    "Magneton",
+    "Farfetch'd",
+    "Doduo",
+    "Dodrio",
+    "Seel",
+    "Dewgong",
+    "Grimer",
+    "Muk",
+    "Shellder",
+    "Cloyster",
+    "Gastly",
+    "Haunter",
+    "Gengar",
+    "Onix",
+    "Drowzee",
+    "Hypno",
+    "Krabby",
+    "Kingler",
+    "Voltorb",
+    "Electrode",
+    "Exeggcute",
+    "Exeggutor",
+    "Cubone",
+    "Marowak",
+    "Hitmonlee",
+    "Hitmonchan",
+    "Lickitung",
+    "Koffing",
+    "Weezing",
+    "Rhyhorn",
+    "Rhydon",
+    "Chansey",
+    "Tangela",
+    "Kangaskhan",
+    "Horsea",
+    "Seadra",
+    "Goldeen",
+    "Seaking",
+    "Staryu",
+    "Starmie",
+    "Mr. Mime",
+    "Scyther",
+    "Jynx",
+    "Electabuzz",
+    "Magmar",
+    "Pinsir",
+    "Tauros",
+    "Magikarp",
+    "Gyarados",
+    "Lapras",
+    "Ditto",
+    "Eevee",
+    "Vaporeon",
+    "Jolteon",
+    "Flareon",
+    "Porygon",
+    "Omanyte",
+    "Omastar",
+    "Kabuto",
+    "Kabutops",
+    "Aerodactyl",
+    "Snorlax",
+    "Articuno",
+    "Zapdos",
+    "Moltres",
+    "Dratini",
+    "Dragonair",
+    "Dragonite",
+    "Mewtwo",
+    "Mew",
+  ],
+  gen2: [
+    "Chikorita",
+    "Bayleef",
+    "Meganium",
+    "Cyndaquil",
+    "Quilava",
+    "Typhlosion",
+    "Totodile",
+    "Croconaw",
+    "Feraligatr",
+    "Sentret",
+    "Furret",
+    "Hoothoot",
+    "Noctowl",
+    "Ledyba",
+    "Ledian",
+    "Spinarak",
+    "Ariados",
+    "Crobat",
+    "Chinchou",
+    "Lanturn",
+    "Pichu",
+    "Cleffa",
+    "Igglybuff",
+    "Togepi",
+    "Togetic",
+    "Natu",
+    "Xatu",
+    "Mareep",
+    "Flaaffy",
+    "Ampharos",
+    "Bellossom",
+    "Marill",
+    "Azumarill",
+    "Sudowoodo",
+    "Politoed",
+    "Hoppip",
+    "Skiploom",
+    "Jumpluff",
+    "Aipom",
+    "Sunkern",
+    "Sunflora",
+    "Yanma",
+    "Wooper",
+    "Quagsire",
+    "Espeon",
+    "Umbreon",
+    "Murkrow",
+    "Slowking",
+    "Misdreavus",
+    "Unown",
+    "Wobbuffet",
+    "Girafarig",
+    "Pineco",
+    "Forretress",
+    "Dunsparce",
+    "Gligar",
+    "Steelix",
+    "Snubbull",
+    "Granbull",
+    "Qwilfish",
+    "Scizor",
+    "Shuckle",
+    "Heracross",
+    "Sneasel",
+    "Teddiursa",
+    "Ursaring",
+    "Slugma",
+    "Magcargo",
+    "Swinub",
+    "Piloswine",
+    "Corsola",
+    "Remoraid",
+    "Octillery",
+    "Delibird",
+    "Mantine",
+    "Skarmory",
+    "Houndour",
+    "Houndoom",
+    "Kingdra",
+    "Phanpy",
+    "Donphan",
+    "Porygon2",
+    "Stantler",
+    "Smeargle",
+    "Tyrogue",
+    "Hitmontop",
+    "Smoochum",
+    "Elekid",
+    "Magby",
+    "Miltank",
+    "Blissey",
+    "Raikou",
+    "Entei",
+    "Suicune",
+    "Larvitar",
+    "Pupitar",
+    "Tyranitar",
+    "Lugia",
+    "Ho-Oh",
+    "Celebi",
+  ],
+  gen3: [
+    "Treecko",
+    "Grovyle",
+    "Sceptile",
+    "Torchic",
+    "Combusken",
+    "Blaziken",
+    "Mudkip",
+    "Marshtomp",
+    "Swampert",
+    "Poochyena",
+    "Mightyena",
+    "Zigzagoon",
+    "Linoone",
+    "Wurmple",
+    "Silcoon",
+    "Beautifly",
+    "Cascoon",
+    "Dustox",
+    "Lotad",
+    "Lombre",
+    "Ludicolo",
+    "Seedot",
+    "Nuzleaf",
+    "Shiftry",
+    "Taillow",
+    "Swellow",
+    "Wingull",
+    "Pelipper",
+    "Ralts",
+    "Kirlia",
+    "Gardevoir",
+    "Surskit",
+    "Masquerain",
+    "Shroomish",
+    "Breloom",
+    "Slakoth",
+    "Vigoroth",
+    "Slaking",
+    "Nincada",
+    "Ninjask",
+    "Shedinja",
+    "Whismur",
+    "Loudred",
+    "Exploud",
+    "Makuhita",
+    "Hariyama",
+    "Azurill",
+    "Nosepass",
+    "Skitty",
+    "Delcatty",
+    "Sableye",
+    "Mawile",
+    "Aron",
+    "Lairon",
+    "Aggron",
+    "Meditite",
+    "Medicham",
+    "Electrike",
+    "Manectric",
+    "Plusle",
+    "Minun",
+    "Volbeat",
+    "Illumise",
+    "Roselia",
+    "Gulpin",
+    "Swalot",
+    "Carvanha",
+    "Sharpedo",
+    "Wailmer",
+    "Wailord",
+    "Numel",
+    "Camerupt",
+    "Torkoal",
+    "Spoink",
+    "Grumpig",
+    "Spinda",
+    "Trapinch",
+    "Vibrava",
+    "Flygon",
+    "Cacnea",
+    "Cacturne",
+    "Swablu",
+    "Altaria",
+    "Zangoose",
+    "Seviper",
+    "Lunatone",
+    "Solrock",
+    "Barboach",
+    "Whiscash",
+    "Corphish",
+    "Crawdaunt",
+    "Baltoy",
+    "Claydol",
+    "Lileep",
+    "Cradily",
+    "Anorith",
+    "Armaldo",
+    "Feebas",
+    "Milotic",
+    "Castform",
+    "Kecleon",
+    "Shuppet",
+    "Banette",
+    "Duskull",
+    "Dusclops",
+    "Tropius",
+    "Chimecho",
+    "Absol",
+    "Wynaut",
+    "Snorunt",
+    "Glalie",
+    "Spheal",
+    "Sealeo",
+    "Walrein",
+    "Clamperl",
+    "Huntail",
+    "Gorebyss",
+    "Relicanth",
+    "Luvdisc",
+    "Bagon",
+    "Shelgon",
+    "Salamence",
+    "Beldum",
+    "Metang",
+    "Metagross",
+    "Regirock",
+    "Regice",
+    "Registeel",
+    "Latias",
+    "Latios",
+    "Kyogre",
+    "Groudon",
+    "Rayquaza",
+    "Jirachi",
+    "Deoxys",
+  ],
+  gen4: [
+    "Turtwig",
+    "Grotle",
+    "Torterra",
+    "Chimchar",
+    "Monferno",
+    "Infernape",
+    "Piplup",
+    "Prinplup",
+    "Empoleon",
+    "Starly",
+    "Staravia",
+    "Staraptor",
+    "Bidoof",
+    "Bibarel",
+    "Kricketot",
+    "Kricketune",
+    "Shinx",
+    "Luxio",
+    "Luxray",
+    "Budew",
+    "Roserade",
+    "Cranidos",
+    "Rampardos",
+    "Shieldon",
+    "Bastiodon",
+    "Burmy",
+    "Wormadam",
+    "Mothim",
+    "Combee",
+    "Vespiquen",
+    "Pachirisu",
+    "Buizel",
+    "Floatzel",
+    "Cherubi",
+    "Cherrim",
+    "Shellos",
+    "Gastrodon",
+    "Ambipom",
+    "Drifloon",
+    "Drifblim",
+    "Buneary",
+    "Lopunny",
+    "Mismagius",
+    "Honchkrow",
+    "Purugly",
+    "Chingling",
+    "Stunky",
+    "Skuntank",
+    "Bronzor",
+    "Bronzong",
+    "Bonsly",
+    "Mime Jr.",
+    "Happiny",
+    "Chatot",
+    "Spiritomb",
+    "Gible",
+    "Gabite",
+    "Garchomp",
+    "Munchlax",
+    "Riolu",
+    "Lucario",
+    "Hippopotas",
+    "Hippowdon",
+    "Skorupi",
+    "Drapion",
+    "Croagunk",
+    "Toxicroak",
+    "Carnivine",
+    "Finneon",
+    "Lumineon",
+    "Mantyke",
+    "Snover",
+    "Abomasnow",
+    "Weavile",
+    "Magnezone",
+    "Lickilicky",
+    "Rhyperior",
+    "Tangrowth",
+    "Electivire",
+    "Magmortar",
+    "Togekiss",
+    "Yanmega",
+    "Leafeon",
+    "Glaceon",
+    "Gliscor",
+    "Mamoswine",
+    "Porygon-Z",
+    "Gallade",
+    "Probopass",
+    "Dusknoir",
+    "Froslass",
+    "Rotom",
+    "Uxie",
+    "Mesprit",
+    "Azelf",
+    "Dialga",
+    "Palkia",
+    "Heatran",
+    "Regigigas",
+    "Giratina",
+    "Cresselia",
+    "Phione",
+    "Manaphy",
+    "Darkrai",
+    "Shaymin",
+    "Arceus",
+  ],
+  gen5: [
+    "Victini",
+    "Snivy",
+    "Servine",
+    "Serperior",
+    "Tepig",
+    "Pignite",
+    "Emboar",
+    "Oshawott",
+    "Dewott",
+    "Samurott",
+    "Patrat",
+    "Watchog",
+    "Lillipup",
+    "Herdier",
+    "Stoutland",
+    "Purrloin",
+    "Liepard",
+    "Pansage",
+    "Simisage",
+    "Pansear",
+    "Simisear",
+    "Panpour",
+    "Simipour",
+    "Munna",
+    "Musharna",
+    "Pidove",
+    "Tranquill",
+    "Unfezant",
+    "Blitzle",
+    "Zebstrika",
+    "Roggenrola",
+    "Boldore",
+    "Gigalith",
+    "Woobat",
+    "Swoobat",
+    "Drilbur",
+    "Excadrill",
+    "Audino",
+    "Timburr",
+    "Gurdurr",
+    "Conkeldurr",
+    "Tympole",
+    "Palpitoad",
+    "Seismitoad",
+    "Throh",
+    "Sawk",
+    "Sewaddle",
+    "Swadloon",
+    "Leavanny",
+    "Venipede",
+    "Whirlipede",
+    "Scolipede",
+    "Cottonee",
+    "Whimsicott",
+    "Petilil",
+    "Lilligant",
+    "Basculin",
+    "Sandile",
+    "Krokorok",
+    "Krookodile",
+    "Darumaka",
+    "Darmanitan",
+    "Maractus",
+    "Dwebble",
+    "Crustle",
+    "Scraggy",
+    "Scrafty",
+    "Sigilyph",
+    "Yamask",
+    "Cofagrigus",
+    "Tirtouga",
+    "Carracosta",
+    "Archen",
+    "Archeops",
+    "Trubbish",
+    "Garbodor",
+    "Zorua",
+    "Zoroark",
+    "Minccino",
+    "Cinccino",
+    "Gothita",
+    "Gothorita",
+    "Gothitelle",
+    "Solosis",
+    "Duosion",
+    "Reuniclus",
+    "Ducklett",
+    "Swanna",
+    "Vanillite",
+    "Vanillish",
+    "Vanilluxe",
+    "Deerling",
+    "Sawsbuck",
+    "Emolga",
+    "Karrablast",
+    "Escavalier",
+    "Foongus",
+    "Amoonguss",
+    "Frillish",
+    "Jellicent",
+    "Alomomola",
+    "Joltik",
+    "Galvantula",
+    "Ferroseed",
+    "Ferrothorn",
+    "Klink",
+    "Klang",
+    "Klinklang",
+    "Tynamo",
+    "Eelektrik",
+    "Eelektross",
+    "Elgyem",
+    "Beheeyem",
+    "Litwick",
+    "Lampent",
+    "Chandelure",
+    "Axew",
+    "Fraxure",
+    "Haxorus",
+    "Cubchoo",
+    "Beartic",
+    "Cryogonal",
+    "Shelmet",
+    "Accelgor",
+    "Stunfisk",
+    "Mienfoo",
+    "Mienshao",
+    "Druddigon",
+    "Golett",
+    "Golurk",
+    "Pawniard",
+    "Bisharp",
+    "Bouffalant",
+    "Rufflet",
+    "Braviary",
+    "Vullaby",
+    "Mandibuzz",
+    "Heatmor",
+    "Durant",
+    "Deino",
+    "Zweilous",
+    "Hydreigon",
+    "Larvesta",
+    "Volcarona",
+    "Cobalion",
+    "Terrakion",
+    "Virizion",
+    "Tornadus",
+    "Thundurus",
+    "Reshiram",
+    "Zekrom",
+    "Landorus",
+    "Kyurem",
+    "Keldeo",
+    "Meloetta",
+    "Genesect",
+  ],
+  gen6: [
+    "Chespin",
+    "Quilladin",
+    "Chesnaught",
+    "Fennekin",
+    "Braixen",
+    "Delphox",
+    "Froakie",
+    "Frogadier",
+    "Greninja",
+    "Bunnelby",
+    "Diggersby",
+    "Fletchling",
+    "Fletchinder",
+    "Talonflame",
+    "Scatterbug",
+    "Spewpa",
+    "Vivillon",
+    "Litleo",
+    "Pyroar",
+    "Flabébé",
+    "Floette",
+    "Florges",
+    "Skiddo",
+    "Gogoat",
+    "Pancham",
+    "Pangoro",
+    "Furfrou",
+    "Espurr",
+    "Meowstic",
+    "Honedge",
+    "Doublade",
+    "Aegislash",
+    "Spritzee",
+    "Aromatisse",
+    "Swirlix",
+    "Slurpuff",
+    "Inkay",
+    "Malamar",
+    "Binacle",
+    "Barbaracle",
+    "Skrelp",
+    "Dragalge",
+    "Clauncher",
+    "Clawitzer",
+    "Helioptile",
+    "Heliolisk",
+    "Tyrunt",
+    "Tyrantrum",
+    "Amaura",
+    "Aurorus",
+    "Sylveon",
+    "Hawlucha",
+    "Dedenne",
+    "Carbink",
+    "Goomy",
+    "Sliggoo",
+    "Goodra",
+    "Klefki",
+    "Phantump",
+    "Trevenant",
+    "Pumpkaboo",
+    "Gourgeist",
+    "Bergmite",
+    "Avalugg",
+    "Noibat",
+    "Noivern",
+    "Xerneas",
+    "Yveltal",
+    "Zygarde",
+    "Diancie",
+    "Hoopa",
+    "Volcanion",
+  ],
+  gen7: [
+    "Rowlet",
+    "Dartrix",
+    "Decidueye",
+    "Litten",
+    "Torracat",
+    "Incineroar",
+    "Popplio",
+    "Brionne",
+    "Primarina",
+    "Pikipek",
+    "Trumbeak",
+    "Toucannon",
+    "Yungoos",
+    "Gumshoos",
+    "Grubbin",
+    "Charjabug",
+    "Vikavolt",
+    "Crabrawler",
+    "Crabominable",
+    "Oricorio",
+    "Cutiefly",
+    "Ribombee",
+    "Rockruff",
+    "Lycanroc",
+    "Wishiwashi",
+    "Mareanie",
+    "Toxapex",
+    "Mudbray",
+    "Mudsdale",
+    "Dewpider",
+    "Araquanid",
+    "Fomantis",
+    "Lurantis",
+    "Morelull",
+    "Shiinotic",
+    "Salandit",
+    "Salazzle",
+    "Stufful",
+    "Bewear",
+    "Bounsweet",
+    "Steenee",
+    "Tsareena",
+    "Comfey",
+    "Oranguru",
+    "Passimian",
+    "Wimpod",
+    "Golisopod",
+    "Sandygast",
+    "Palossand",
+    "Pyukumuku",
+    "Type: Null",
+    "Silvally",
+    "Minior",
+    "Komala",
+    "Turtonator",
+    "Togedemaru",
+    "Mimikyu",
+    "Bruxish",
+    "Drampa",
+    "Dhelmise",
+    "Jangmo-o",
+    "Hakamo-o",
+    "Kommo-o",
+    "Tapu Koko",
+    "Tapu Lele",
+    "Tapu Bulu",
+    "Tapu Fini",
+    "Cosmog",
+    "Cosmoem",
+    "Solgaleo",
+    "Lunala",
+    "Nihilego",
+    "Buzzwole",
+    "Pheromosa",
+    "Xurkitree",
+    "Celesteela",
+    "Kartana",
+    "Guzzlord",
+    "Necrozma",
+    "Magearna",
+    "Marshadow",
+    "Poipole",
+    "Naganadel",
+    "Stakataka",
+    "Blacephalon",
+    "Zeraora",
+    "Meltan",
+    "Melmetal",
+  ],
+  gen8: [
+    "Grookey",
+    "Thwackey",
+    "Rillaboom",
+    "Scorbunny",
+    "Raboot",
+    "Cinderace",
+    "Sobble",
+    "Drizzile",
+    "Inteleon",
+    "Skwovet",
+    "Greedent",
+    "Rookidee",
+    "Corvisquire",
+    "Corviknight",
+    "Blipbug",
+    "Dottler",
+    "Orbeetle",
+    "Nickit",
+    "Thievul",
+    "Gossifleur",
+    "Eldegoss",
+    "Wooloo",
+    "Dubwool",
+    "Chewtle",
+    "Drednaw",
+    "Yamper",
+    "Boltund",
+    "Rolycoly",
+    "Carkol",
+    "Coalossal",
+    "Applin",
+    "Flapple",
+    "Appletun",
+    "Silicobra",
+    "Sandaconda",
+    "Cramorant",
+    "Arrokuda",
+    "Barraskewda",
+    "Toxel",
+    "Toxtricity",
+    "Sizzlipede",
+    "Centiskorch",
+    "Clobbopus",
+    "Grapploct",
+    "Sinistea",
+    "Polteageist",
+    "Hatenna",
+    "Hattrem",
+    "Hatterene",
+    "Impidimp",
+    "Morgrem",
+    "Grimmsnarl",
+    "Obstagoon",
+    "Perrserker",
+    "Cursola",
+    "Sirfetch'd",
+    "Mr. Rime",
+    "Runerigus",
+    "Milcery",
+    "Alcremie",
+    "Falinks",
+    "Pincurchin",
+    "Snom",
+    "Frosmoth",
+    "Stonjourner",
+    "Eiscue",
+    "Indeedee",
+    "Morpeko",
+    "Cufant",
+    "Copperajah",
+    "Dracozolt",
+    "Arctozolt",
+    "Dracovish",
+    "Arctovish",
+    "Duraludon",
+    "Dreepy",
+    "Drakloak",
+    "Dragapult",
+    "Zacian",
+    "Zamazenta",
+    "Eternatus",
+    "Kubfu",
+    "Urshifu",
+    "Zarude",
+    "Regieleki",
+    "Regidrago",
+    "Glastrier",
+    "Spectrier",
+    "Calyrex",
+  ],
+  gen9: [
+    "Sprigatito",
+    "Floragato",
+    "Meowscarada",
+    "Fuecoco",
+    "Crocalor",
+    "Skeledirge",
+    "Quaxly",
+    "Quaxwell",
+    "Quaquaval",
+    "Lechonk",
+    "Oinkologne",
+    "Tarountula",
+    "Spidops",
+    "Nymble",
+    "Lokix",
+    "Pawmi",
+    "Pawmo",
+    "Pawmot",
+    "Tandemaus",
+    "Maushold",
+    "Fidough",
+    "Dachsbun",
+    "Smoliv",
+    "Dolliv",
+    "Arboliva",
+    "Squawkabilly",
+    "Nacli",
+    "Naclstack",
+    "Garganacl",
+    "Charcadet",
+    "Armarouge",
+    "Ceruledge",
+    "Tadbulb",
+    "Bellibolt",
+    "Wattrel",
+    "Kilowattrel",
+    "Maschiff",
+    "Mabosstiff",
+    "Shroodle",
+    "Grafaiai",
+    "Bramblin",
+    "Brambleghast",
+    "Toedscool",
+    "Toedscruel",
+    "Klawf",
+    "Capsakid",
+    "Scovillain",
+    "Rellor",
+    "Rabsca",
+    "Flittle",
+    "Espathra",
+    "Tinkatink",
+    "Tinkatuff",
+    "Tinkaton",
+    "Wiglett",
+    "Wugtrio",
+    "Bombirdier",
+    "Finizen",
+    "Palafin",
+    "Varoom",
+    "Revavroom",
+    "Cyclizar",
+    "Orthworm",
+    "Glimmet",
+    "Glimmora",
+    "Greavard",
+    "Houndstone",
+    "Flamigo",
+    "Cetoddle",
+    "Cetitan",
+    "Veluza",
+    "Dondozo",
+    "Tatsugiri",
+    "Annihilape",
+    "Clodsire",
+    "Farigiraf",
+    "Dudunsparce",
+    "Kingambit",
+    "Great Tusk",
+    "Scream Tail",
+    "Brute Bonnet",
+    "Flutter Mane",
+    "Slither Wing",
+    "Sandy Shocks",
+    "Iron Treads",
+    "Iron Bundle",
+    "Iron Hands",
+    "Iron Jugulis",
+    "Iron Moth",
+    "Iron Thorns",
+    "Frigibax",
+    "Arctibax",
+    "Baxcalibur",
+    "Gimmighoul",
+    "Gholdengo",
+    "Wo-Chien",
+    "Chien-Pao",
+    "Ting-Lu",
+    "Chi-Yu",
+    "Roaring Moon",
+    "Iron Valiant",
+    "Koraidon",
+    "Miraidon",
+    "Walking Wake",
+    "Iron Leaves",
+    "Dipplin",
+    "Poltchageist",
+    "Sinistcha",
+    "Okidogi",
+    "Munkidori",
+    "Fezandipiti",
+    "Ogerpon",
+    "Archaludon",
+    "Hydrapple",
+    "Gouging Fire",
+    "Raging Bolt",
+    "Iron Boulder",
+    "Iron Crown",
+    "Terapagos",
+    "Pecharunt",
+  ],
+};
+const spriteSlug = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/\s+/g, "-") // spaces -> dash
+    .replace(/[.'’]/g, "") // remove apostrophes/dots
+    .replace(/♀/g, "-f") // optional: handle female symbol
+    .replace(/♂/g, "-m"); // optional: handle male symbol
+
+function PokemonQuizzer() {
+  const [selectedGen, setSelectedGen] = useState<string | null>(null);
+  const [currentGuess, setCurrentGuess] = useState("");
+  const [guessedPokemon, setGuessedPokemon] = useState<string[]>([]);
+  const [score, setScore] = useState(0);
+  const [giveUpMessage, setGiveUpMessage] = useState("");
+  const [screen, setScreen] = useState<"menu" | "quiz">("menu");
+
+  // needs to pick the current list based on generation
+  const POKEMON_LIST = selectedGen ? POKEMON_BY_GEN[selectedGen] : [];
+  const totalPokemon = POKEMON_LIST.length;
+  const isComplete = score === totalPokemon;
+
+  const handleGiveUp = () => {
+    setGuessedPokemon([...POKEMON_LIST]);
+    setGiveUpMessage("😢 You gave up! Try again next time!");
+  };
+
+  useEffect(() => {
+    if (selectedGen) {
+      document.getElementById("pokemon-input")?.focus();
+    }
+  }, [selectedGen]);
+
+  const handleGuessSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const guess = currentGuess.trim().toLowerCase();
+    if (!guess) return;
+
+    // Find the Pokémon in the list (case-sensitive now)
+    const matchedPokemon = POKEMON_LIST.find((p) => p.toLowerCase() === guess);
+
+    // If it's a valid guess and hasn't been guessed yet
+    if (matchedPokemon && !guessedPokemon.includes(matchedPokemon)) {
+      setGuessedPokemon((prevGuessed) => [...prevGuessed, matchedPokemon]);
+      setScore((prevScore) => prevScore + 1);
+    }
+
+    setCurrentGuess("");
+  };
+
+  const handleReset = () => {
+    setScore(0);
+    setGuessedPokemon([]);
+    setCurrentGuess("");
+    setSelectedGen(null); // go back to generation select cuz start over
+  };
+
+  const handleRestart = () => {
+    setSelectedGen(null); // Go back to generation selection
+    setGuessedPokemon([]); // Clear all guesses
+    setScore(0); // Reset score
+    setGiveUpMessage(""); // Clear any give-up message
+    setCurrentGuess(""); // Clear input
+  };
+
+  if (!selectedGen) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-yellow-200 via-white to-blue-200 p-6 relative overflow-hidden">
+        {/* Faint Pokéball background */}
+        <div className="absolute inset-0 opacity-10 bg-[url('https://upload.wikimedia.org/wikipedia/commons/5/53/Poké_Ball_icon.svg')] bg-center bg-cover" />
+
+        <div className="relative z-10 text-center">
+          {/* Title */}
+          <h1 className="text-6xl font-extrabold text-yellow-400 drop-shadow-[2px_2px_0px_rgba(0,0,255,1)] mb-6">
+            Pokémon Guesser
+          </h1>
+          <p className="text-xl text-gray-700 font-medium mb-10">
+            Pick a generation to start your journey!
+          </p>
+
+          {/* Generation Select */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 max-w-2xl mx-auto">
+            {Object.keys(POKEMON_BY_GEN).map((gen) => (
+              <button
+                key={gen}
+                onClick={() => setSelectedGen(gen)}
+                className="px-8 py-6 bg-white border-4 border-blue-600 rounded-2xl font-bold text-2xl text-blue-700 shadow-lg hover:scale-105 hover:bg-yellow-100 transition transform duration-200"
+              >
+                {gen.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-red-100 to-pink-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl p-6 md:p-10">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-extrabold text-red-600 flex items-center justify-center gap-3 animate-pulse">
+            <img
+              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+              alt="Pokéball"
+              className="w-12 h-12"
+            />
+            Pokémon Guesser
+          </h1>
+          <p className="text-gray-600 mt-2 text-lg md:text-xl">
+            How many can you name? Fill your Pokédex!
+          </p>
+        </div>
+
+        {/* Quiz Display */}
+        {selectedGen && (
+          <>
+            {/* Score Display */}
+            <div className="bg-yellow-300 border-4 border-red-500 rounded-xl text-center p-4 mb-8 shadow-lg flex items-center justify-center gap-6">
+              <div className="flex flex-col items-center">
+                <p className="text-xs font-semibold text-gray-700">Score</p>
+                <p className="text-3xl font-bold text-red-600">{score}</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="text-xs font-semibold text-gray-700">Total</p>
+                <p className="text-3xl font-bold text-red-600">
+                  {totalPokemon}
+                </p>
+              </div>
+            </div>
+
+            {/* Input + Buttons */}
+            {isComplete ? (
+              <div className="text-center my-6">
+                <h2 className="text-4xl font-bold text-green-600 mb-3 animate-bounce">
+                  🎉 Congratulations! 🎉
+                </h2>
+                <p className="text-lg text-gray-700 mb-4">
+                  You named all {totalPokemon} Pokémon!
+                </p>
+                <button
+                  onClick={handleReset}
+                  className="px-8 py-3 bg-red-600 text-white font-bold rounded-full shadow-lg hover:bg-red-700 hover:scale-105 transform transition duration-300 focus:outline-none focus:ring-4 focus:ring-red-400"
+                >
+                  Play Again
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-start gap-4 mb-4">
+                {/* Input Box */}
+                <form onSubmit={handleGuessSubmit} className="flex-1">
+                  <input
+                    id="pokemon-input"
+                    type="text"
+                    value={currentGuess}
+                    onChange={(e) => setCurrentGuess(e.target.value)}
+                    placeholder="Who's that Pokémon?"
+                    className="w-full px-6 py-4 text-lg border-4 border-yellow-400 rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-yellow-300 transition transform hover:scale-105"
+                  />
+                </form>
+
+                {/* Buttons */}
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={handleGiveUp}
+                    className="px-6 py-2 bg-gray-500 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 hover:scale-105 transform transition duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  >
+                    Give Up
+                  </button>
+                  <button
+                    onClick={handleRestart}
+                    className="px-6 py-2 bg-green-600 text-white font-semibold rounded-full shadow-md hover:bg-green-700 hover:scale-105 transform transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
+                  >
+                    Back to Menu
+                  </button>
+
+                  {/* Give Up Message */}
+                  {giveUpMessage && (
+                    <p className="text-gray-700 mt-2 font-medium text-center">
+                      {giveUpMessage}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Pokédex Grid */}
+            <div className="bg-gray-50 p-4 rounded-2xl border shadow-inner">
+              <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-4">
+                {POKEMON_LIST.map((pokemon, index) => {
+                  const dexNumber = index + 1;
+                  const isGuessed = guessedPokemon.includes(pokemon);
+                  const slug = spriteSlug(pokemon);
+                  const spriteUrl = `https://img.pokemondb.net/sprites/home/normal/${encodeURIComponent(
+                    slug
+                  )}.png`;
+
+                  return (
+                    <div
+                      key={pokemon}
+                      className={`flex flex-col items-center justify-center p-2 rounded-lg shadow-md w-24 transition-transform transform hover:scale-105 hover:shadow-xl ${
+                        isGuessed
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-300 text-gray-500"
+                      }`}
+                    >
+                      <span className="text-xs font-semibold mb-1">
+                        #{dexNumber}
+                      </span>
+                      {isGuessed ? (
+                        <>
+                          <img
+                            src={spriteUrl}
+                            alt={pokemon}
+                            className="w-16 h-16 animate-fadeIn"
+                          />
+
+                          <span className="capitalize text-sm mt-1">
+                            {pokemon}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-16 h-16 bg-gray-500 rounded-full opacity-50" />
+                          <span className="text-sm mt-1">???</span>
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default PokemonQuizzer;
